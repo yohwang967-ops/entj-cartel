@@ -1,0 +1,657 @@
+<!doctype html>
+<html lang="ko"><meta charset="utf-8"><link rel="icon" href="/favicon.svg">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>ENTJ 카르텔</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Gowun+Batang:wght@400;700&family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<style>
+/* 레이아웃: 폰 한 화면 앱(최대 430px) · 위 모드 전환 · 가운데 내용 · 아래 탭 막대. 맥에서는 가운데 폰 크기로 */
+:root{
+  color-scheme: dark;
+  --bg:#0f1216; --surface:#181c22; --surface2:#232931; --line:#2d343e;
+  --ink:#f2f4f7; --sub:#b8c0cb; --muted:#7d8693;
+  --all:#5b8def; --hobby:#35c9a0; --biz:#e9b04a;
+  --accent:var(--all); --accent-ink:#0b0f14;
+  --display:"Black Han Sans","Noto Sans KR",system-ui,sans-serif;
+  --name:"Gowun Batang","Noto Serif KR",serif;
+  --body:"Noto Sans KR",-apple-system,"Apple SD Gothic Neo",system-ui,sans-serif;
+}
+html,body{height:100%}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.app[data-mode=hobby]{--accent:var(--hobby)}
+.app[data-mode=biz]{--accent:var(--biz)}
+*{box-sizing:border-box}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:10px}
+
+.app{max-width:430px;height:100%;margin:0 auto;display:flex;flex-direction:column;position:relative;background:var(--bg)}
+@media (min-width:600px){.app{border-left:1px solid var(--line);border-right:1px solid var(--line)}}
+
+header{padding:10px max(16px,env(safe-area-inset-right,0px)) 8px max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:10px}
+.top{display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:var(--display);font-size:24px;letter-spacing:.5px}
+.logo b{color:var(--accent);font-weight:400;transition:color .25s}
+.who{font-size:12px;color:var(--muted)}
+.modes{display:grid;grid-template-columns:repeat(3,1fr);background:var(--surface);border-radius:999px;padding:4px}
+.modes button{padding:8px 4px;border-radius:999px;font-size:13px;font-weight:700;color:var(--sub);transition:background .2s,color .2s}
+.modes button[aria-pressed=true]{background:var(--accent);color:var(--accent-ink)}
+
+main{flex:1;overflow-y:auto;overscroll-behavior:contain;padding:4px max(16px,env(safe-area-inset-right,0px)) 120px max(16px,env(safe-area-inset-left,0px))}
+.view[hidden]{display:none}
+
+/* 발견(프로필): 폰 = 이름 칸 위 · 이야기 아래 / 넓은 화면 = 왼쪽 이야기 · 오른쪽 이름 칸(폭 고정) */
+.photo{position:relative;aspect-ratio:4/3;width:100%;border-radius:20px;overflow:hidden;touch-action:pan-y;user-select:none;transition:transform .3s ease, opacity .3s}
+.photo .art{position:absolute;inset:0}
+.noph{position:absolute;inset:0;display:grid;place-content:center;font-family:var(--name);font-weight:700;font-size:96px;line-height:1;color:rgba(255,255,255,.9)}
+.ph-b{position:absolute;left:12px;top:12px;right:12px;display:flex;flex-wrap:wrap;gap:6px}
+.idt{display:flex;flex-direction:column;gap:6px;padding:14px 2px 4px}
+.idt h2{margin:0;font-family:var(--name);font-weight:700;font-size:32px;line-height:1.15}
+.idt h2 span{font-family:var(--body);font-weight:400;font-size:20px;color:var(--muted);margin-left:8px}
+.idt .one{margin:0;font-family:var(--name);font-size:17px;font-weight:700;line-height:1.5;color:var(--ink)}
+.mini{margin:6px 0 0;display:flex;flex-direction:column}
+.mini div{display:grid;grid-template-columns:72px minmax(0,1fr);gap:10px;padding:8px 0;border-top:1px solid var(--line)}
+.mini dt{font-size:12.5px;color:var(--muted)}
+.mini dd{margin:0;font-size:14px}
+.rel b{font-weight:700}
+.rel small{font-size:12px;color:var(--muted);margin-left:4px}
+.aibox{margin-top:10px;padding:16px 16px 14px;border-radius:16px;background:var(--surface)}
+.aibox .lab{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12.5px;font-weight:700;color:var(--muted)}
+.aibox .slogan{font-family:var(--display);font-size:24px;line-height:1.3;margin:10px 0 8px;color:var(--accent);word-break:keep-all;transition:color .25s}
+.aibox .whois{margin:0;font-size:14px;line-height:1.65;color:var(--sub);word-break:keep-all}
+.aibox .aift{display:flex;flex-wrap:wrap;justify-content:space-between;gap:6px 12px;margin-top:12px;padding-top:10px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted)}
+.aibox .aift b{color:var(--ink)}
+.tale-h{display:flex;justify-content:space-between;align-items:baseline;margin:4px 2px 4px}
+.tale-h h3{margin:0;font-family:var(--name);font-size:22px}
+.tale-h span{font-size:12.5px;color:var(--muted)}
+.tale ol{list-style:none;margin:0;padding:0}
+.tale li{position:relative;padding:16px 0 18px 26px;border-bottom:1px solid var(--line)}
+.tale li:last-child{border-bottom:0}
+.tale li::before{content:"";position:absolute;left:6px;top:24px;bottom:-24px;width:2px;background:var(--line)}
+.tale li:last-child::before{display:none}
+.tale li::after{content:"";position:absolute;left:2px;top:20px;width:10px;height:10px;border-radius:50%;background:var(--accent)}
+.tale .no{font-size:12px;color:var(--muted);font-weight:700}
+.tale h4{margin:2px 0 6px;font-family:var(--display);font-weight:400;font-size:20px;letter-spacing:.3px;color:var(--accent);word-break:keep-all;transition:color .25s}
+.tale p{margin:0;font-family:var(--name);font-size:18px;line-height:1.75;word-break:keep-all}
+.tale .tag{display:inline-block;margin-top:8px}
+.tale-n{font-size:12px;color:var(--muted);margin:2px 2px 0}
+.badges{display:flex;flex-wrap:wrap;gap:6px}
+.badge{font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:999px;background:rgba(255,255,255,.14);backdrop-filter:blur(6px)}
+.badge.ok{background:var(--accent);color:var(--accent-ink)}
+.counter{font-size:12px;color:var(--muted);margin:2px 2px 8px;display:flex;justify-content:space-between}
+
+.prompt{border-top:1px solid var(--line);padding:14px 2px}
+.prompt .q{font-size:12.5px;font-weight:700;color:var(--muted);margin-bottom:6px;display:flex;justify-content:space-between;gap:8px}
+.prompt .a{font-family:var(--name);font-size:20px;font-weight:700;line-height:1.4}
+.prompt .a.small{font-family:var(--body);font-size:15px;font-weight:500;line-height:1.6}
+.prompt.hl .q{color:var(--accent)}
+.tag{font-size:11px;font-weight:700;padding:1px 7px;border-radius:6px;background:var(--surface2);color:var(--sub);white-space:nowrap}
+.tag.ai{background:transparent;border:1px solid var(--line);color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:13px;padding:5px 11px;border-radius:999px;background:var(--surface2);color:var(--sub)}
+.chip.match{background:var(--accent);color:var(--accent-ink);font-weight:700}
+.facts{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.facts li{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.facts li span:first-child{min-width:0}
+.idt .hello{margin:6px 0 0;font-family:var(--name);font-size:15px;color:var(--sub)}
+/* 보드: 위 숫자 요약 → 랭킹 · 트로피 → 모든 도전 · 성취 */
+.bd-top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px;margin:6px 2px 14px}
+.bd-h{margin:0;font-family:var(--display);font-weight:400;font-size:28px;letter-spacing:.5px}
+.bd-s{margin:4px 0 0;font-size:13.5px;color:var(--sub)}
+.seg{display:flex;background:var(--surface);border-radius:999px;padding:3px}
+.seg button{padding:6px 12px;border-radius:999px;font-size:12.5px;font-weight:700;color:var(--sub)}
+.seg button[aria-pressed=true]{background:var(--surface2);color:var(--ink)}
+.kpis{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.kpi{padding:12px 6px}
+.kpi:nth-child(odd){border-right:1px solid var(--line)}
+.kpi:nth-child(-n+2){border-bottom:1px solid var(--line)}
+.kpi b{display:block;font-size:24px;font-variant-numeric:tabular-nums;line-height:1.2;word-break:keep-all}
+.kpi span{font-size:12px;color:var(--muted)}
+.champ{display:grid;grid-template-columns:72px minmax(0,1fr);gap:14px;align-items:center;width:100%;text-align:left;padding:14px;border-radius:16px;background:color-mix(in srgb,var(--accent) 14%,var(--surface))}
+.champ .av{width:72px;height:72px;font-size:30px}
+.champ .k1{font-size:12px;font-weight:700;color:var(--accent)}
+.champ .nm{font-family:var(--name);font-size:22px;font-weight:700}
+.champ .tt{font-size:13px;color:var(--sub)}
+.champ .sl{font-family:var(--display);font-size:16px;color:var(--ink);margin-top:4px;word-break:keep-all}
+.rrow{display:grid;grid-template-columns:28px 44px minmax(0,1fr) auto;gap:10px;align-items:center;width:100%;text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);border-radius:10px}
+.rrow .rn{font-family:var(--display);font-size:20px;color:var(--muted);text-align:center}
+.rrow .av{width:44px;height:44px;font-size:18px}
+.rrow .nm{font-weight:700}
+.rrow .tt{font-size:12.5px;color:var(--sub);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rrow .dims{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rrow .sc{font-size:22px;font-weight:900;font-variant-numeric:tabular-nums}
+.sbar{grid-column:3/-1;height:4px;border-radius:2px;background:var(--surface2);overflow:hidden}
+.sbar i{display:block;height:100%;background:var(--accent)}
+.trow{padding:12px 4px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:6px}
+.trow .th{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.trow b{font-size:15px}
+.trow .cnt{font-size:13px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.trow .cnt.zero{color:var(--muted);font-weight:500}
+.trow .ds{font-size:12.5px;color:var(--muted)}
+.trow .faces .av{width:24px;height:24px;font-size:11px}
+.frow{display:grid;grid-template-columns:40px minmax(0,1fr);gap:10px;align-items:center;width:100%;text-align:left;padding:10px 6px;border-bottom:1px solid var(--line);border-radius:10px}
+.frow .av{width:40px;height:40px;font-size:16px}
+.frow .ft{font-size:14px}
+.frow .ft b{margin-right:6px}
+.frow .ftg{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.rrow:hover,.frow:hover,.champ:hover{background:color-mix(in srgb,var(--ink) 6%,transparent)}
+.champ:hover{background:color-mix(in srgb,var(--accent) 20%,var(--surface))}
+.note{font-size:12px;color:var(--muted);margin:10px 2px 0;line-height:1.6}
+.info{display:grid;grid-template-columns:1fr 1fr;gap:10px 14px;margin:0}
+.info div.wide{grid-column:1/-1}
+.info dt{font-size:12px;color:var(--muted)}
+.info dd{margin:0;font-weight:500}
+.give{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.give h4{margin:0 0 6px;font-size:12px;color:var(--muted)}
+
+.actions{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(72px + env(safe-area-inset-bottom,0px));display:flex;gap:18px;z-index:5}
+.actions button{width:60px;height:60px;border-radius:50%;display:grid;place-items:center;background:var(--surface2);box-shadow:0 8px 24px rgba(0,0,0,.45)}
+.actions .yes{width:68px;height:68px;background:var(--accent);color:var(--accent-ink)}
+.actions svg{width:26px;height:26px}
+.actions .lbl{position:absolute;bottom:-18px;left:0;right:0;text-align:center;font-size:11px;color:var(--muted)}
+.actions button{position:relative}
+.actions .yes[aria-pressed=true]{background:var(--surface2);color:var(--accent);outline:2px solid var(--accent)}
+
+.empty{text-align:center;padding:60px 10px;color:var(--sub)}
+.empty b{display:block;font-family:var(--name);font-size:22px;color:var(--ink);margin-bottom:6px}
+
+/* 겹침 · 모임 · 내 프로필 · 수집 */
+h3.sec{font-size:13px;color:var(--muted);font-weight:700;margin:18px 2px 8px}
+.row{display:flex;gap:12px;align-items:center;padding:12px 4px;border-bottom:1px solid var(--line)}
+.row:last-child{border-bottom:0}
+.av{width:52px;height:52px;border-radius:50%;flex:none;display:grid;place-items:center;font-family:var(--name);font-weight:700;font-size:22px;color:#fff}
+.row .txt{min-width:0;flex:1}
+.row .nm{font-weight:700}
+.row .ds{font-size:13px;color:var(--sub);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .ice{font-size:13px;color:var(--accent);margin-top:2px}
+.pill{font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--surface2);color:var(--sub);white-space:nowrap}
+.newm{display:flex;gap:12px;overflow-x:auto;padding:4px 2px 8px;scrollbar-width:none}
+.newm .av{width:64px;height:64px;outline:2px solid var(--accent);outline-offset:3px}
+.newm div{text-align:center;font-size:12px;color:var(--sub);flex:none}
+
+.group{background:var(--surface);border-radius:18px;padding:14px 16px;margin-bottom:10px;display:flex;flex-direction:column;gap:8px}
+.group .gt{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.group .gt b{font-size:16px}
+.group p{margin:0;font-size:13.5px;color:var(--sub)}
+.faces{display:flex}
+.faces .av{width:28px;height:28px;font-size:12px;margin-right:-6px;outline:2px solid var(--surface)}
+.join{align-self:flex-start;padding:7px 14px;border-radius:999px;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:13px}
+.join[aria-pressed=true]{background:var(--surface2);color:var(--sub)}
+
+.notice{background:var(--surface);border-radius:18px;padding:14px 16px;font-size:13.5px;color:var(--sub)}
+/* 말로 가입하기 */
+.rc{padding-bottom:20px;border-bottom:1px solid var(--line);margin-bottom:8px}
+.rc-pr{list-style:none;margin:14px 0 0;padding:0}
+.rc-pr li{position:relative;padding:9px 0 9px 24px;border-top:1px solid var(--line);font-size:14px;color:var(--sub);word-break:keep-all}
+.rc-pr li::before{content:"✓";position:absolute;left:2px;top:9px;color:var(--accent);font-weight:700}
+.rc-ask{list-style:none;margin:0 0 16px;padding:0}
+.rc-ask li{display:grid;grid-template-columns:92px minmax(0,1fr);gap:10px;padding:8px 2px;border-top:1px solid var(--line);font-size:14px}
+.rc-ask span{color:var(--muted);word-break:keep-all}
+.rc .cta{width:100%}
+.rc .cta.rc-on{background:#e5484d;color:#fff}
+.rc .cta.rc-del{background:transparent;color:#ff8a8d;border:0;border-top:1px solid var(--line);border-radius:0;margin-top:14px}
+.rc-ios{border-top:1px solid var(--line);padding:12px 2px;font-size:13.5px;color:var(--sub);word-break:keep-all}
+.rc-ios b{color:var(--ink)}.rc-ios ol{margin:8px 0;padding-left:20px}.rc-ios p{margin:6px 0 0}
+.rc-pend{display:grid;gap:8px;border-top:1px solid var(--line);padding:12px 2px;font-size:14px;word-break:keep-all}
+.rc-pend span{color:var(--sub);font-size:13px}
+.rc-file{display:block;text-align:center;margin-top:12px;font-size:13.5px;color:var(--sub);text-decoration:underline;cursor:pointer}
+.rc-file input{display:none}
+.rc-tip{font-size:13px;color:var(--muted);margin:10px 2px 0;word-break:keep-all}
+.rc-busy,.rc-ok,.rc-err{font-size:14px;padding:12px 2px;border-top:1px solid var(--line);color:var(--sub);word-break:keep-all}
+.rc-err{color:#ff8a8d}
+.rc-ok b{color:var(--accent)}
+.rc-txt{margin:0;padding-left:20px;font-size:14.5px;color:var(--ink)}
+.rc-txt li{padding:5px 0;word-break:keep-all}
+.rc .join{margin-top:10px}
+/* 보드 초대 QR */
+.qr-row{display:grid;grid-template-columns:88px minmax(0,1fr);gap:14px;align-items:center;padding:14px 2px;border-bottom:1px solid var(--line);color:inherit;text-decoration:none}
+.qr-row img{width:88px;height:88px;border-radius:10px;background:#fff;display:block}
+.qr-row b{display:block;font-size:15px}
+.qr-row span{font-size:13px;color:var(--sub);word-break:keep-all}
+.notice b{color:var(--ink)}
+.field{padding:12px 4px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:6px}
+.field .k{font-size:12px;color:var(--muted);display:flex;justify-content:space-between;gap:8px}
+.field .v{font-weight:500}
+.field .ev{font-size:12.5px;color:var(--muted)}
+.field .ctl{display:flex;gap:6px;flex-wrap:wrap}
+.field .ctl button{font-size:12.5px;padding:5px 11px;border-radius:999px;background:var(--surface2);color:var(--sub)}
+.field .ctl button[aria-pressed=true]{background:var(--accent);color:var(--accent-ink);font-weight:700}
+.field.ai{background:color-mix(in srgb,var(--accent) 8%,transparent);border-radius:12px;padding:12px 10px}
+.cta{width:100%;margin-top:16px;padding:15px;border-radius:16px;background:var(--accent);color:var(--accent-ink);font-weight:900;font-size:16px}
+.cta:disabled{opacity:.4}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:var(--sub);margin-top:10px}
+.check input{margin-top:3px;accent-color:var(--accent)}
+
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.stat{background:var(--surface);border-radius:16px;padding:12px 14px}
+.stat b{display:block;font-size:26px;font-variant-numeric:tabular-nums}
+.stat span{font-size:12px;color:var(--muted)}
+.bar{height:8px;border-radius:99px;background:var(--surface2);overflow:hidden;margin-top:12px}
+.bar i{display:block;height:100%;background:var(--accent)}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:6px}
+.q-ask{font-size:13px;color:var(--accent);margin-top:4px}
+
+nav{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:100%;max-width:430px;display:grid;grid-template-columns:repeat(6,1fr);background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(12px);border-top:1px solid var(--line);padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px));z-index:6}
+nav button{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;color:var(--muted);padding:6px 0;position:relative}
+nav button svg{width:22px;height:22px}
+nav button[aria-current=true]{color:var(--ink)}
+nav button[aria-current=true] svg{color:var(--accent)}
+nav .n{position:absolute;top:2px;right:calc(50% - 20px);min-width:16px;height:16px;border-radius:8px;background:var(--accent);color:var(--accent-ink);font-size:10px;font-weight:900;display:grid;place-items:center;padding:0 4px}
+.sample{font-size:11px;color:var(--muted);text-align:center;margin-top:18px}
+/* 갤럭시 폴드를 펼친 화면 · 태블릿 · 맥(가로 760 이상): 위 한 줄 머리 · 왼쪽 사진 카드 · 오른쪽 질문 카드 두 단 */
+@media (min-width:760px){
+  .app,nav{max-width:none}
+  header{flex-direction:row;align-items:center;justify-content:space-between;gap:20px;padding:10px 28px 8px}
+  .modes{width:min(460px,50vw)}
+  .who{display:block}
+  main{padding:6px 28px 84px}
+  nav{display:flex;justify-content:center;gap:8px}
+  nav button{width:110px}
+  /* 프로필: 왼쪽 이야기(남는 폭) · 오른쪽 이름 칸(300~360 고정 · 줄어들어 글자가 세로로 깨지지 않게) */
+  #v-discover{display:grid;grid-template-columns:minmax(0,1fr) minmax(300px,360px);gap:36px;align-items:start;max-width:1180px;margin:0 auto}
+  .prof-r{grid-column:2;grid-row:1;min-width:0}
+  .prof-l{grid-column:1;grid-row:1;min-width:0;padding-top:24px}
+  .prof-r .photo{aspect-ratio:16/10}
+  .act-slot .actions{position:static;transform:none;justify-content:center;gap:28px;margin:20px 0 30px}
+  .tale p{font-size:20px}
+  .tale h4{font-size:22px}
+  /* 보드: 숫자 네 칸 한 줄 · 아래 랭킹(왼쪽) · 트로피(오른쪽) */
+  .kpis{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .kpi{border-right:1px solid var(--line)}
+  .kpi:last-child{border-right:0}
+  .kpi:nth-child(-n+2){border-bottom:0}
+  .kpi{padding:14px 14px}
+  .bd-grid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:32px;align-items:start}
+  #v-board{max-width:1180px;margin:0 auto}
+  #v-match,#v-groups,#v-me,#v-plaza{max-width:760px;margin:0 auto}
+}
+.who select{background:var(--surface2);color:var(--ink);border:0;border-radius:999px;padding:5px 10px;font:inherit;font-size:13px;margin-left:4px}
+.who label{font-size:13px;color:var(--sub);white-space:nowrap}
+.pair{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:10px 2px;border-top:1px solid var(--line);color:var(--ink)}
+.pair .fc{display:flex;flex:none}.pair .fc .av{width:34px;height:34px;font-size:14px;margin-right:-8px;outline:2px solid var(--bg)}
+.pair .pt{min-width:0;flex:1;margin-left:8px}.pair .pt b{display:block;font-size:14px}.pair .pt small{color:var(--sub);font-size:12.5px;display:block}
+.pair .pc{font-weight:900;color:var(--accent);flex:none}
+.intro{border-top:1px solid var(--line);padding:14px 2px;display:grid;gap:8px}
+.intro .ih{display:flex;align-items:center;gap:12px}.intro .k1{font-size:12px;color:var(--accent);font-weight:700}
+.intro ul{margin:0;padding-left:18px;color:var(--sub);font-size:13.5px}
+.btns{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.ghost{padding:7px 14px;border-radius:999px;background:var(--surface2);color:var(--ink);font-weight:700;font-size:13px}
+.inp{display:block;width:100%;box-sizing:border-box;background:var(--surface);border:1px solid var(--line);color:var(--ink);border-radius:12px;padding:11px 12px;font:inherit;font-size:15px;margin-top:8px;resize:vertical}
+.pick{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
+.pick button{display:flex;align-items:center;gap:10px;padding:12px;border-radius:16px;background:var(--surface);text-align:left;font-weight:700;color:var(--ink)}
+.pick .av{width:40px;height:40px;font-size:16px}
+.err{color:#ff8a8d;font-size:13px;margin:8px 0 0}
+.srv{margin-top:8px;font-size:13px;color:var(--sub)}.srv summary{cursor:pointer}
+.row .join{flex:none}
+.iam{background:var(--surface);border-radius:18px;padding:14px 16px;margin:0 0 14px}
+.iam b{display:block;font-size:15px}.iam p{margin:4px 0 10px;font-size:13px;color:var(--sub)}
+.iam .faces2{display:flex;gap:8px;flex-wrap:wrap}.iam .faces2 button{display:flex;align-items:center;gap:6px;padding:6px 12px 6px 6px;border-radius:999px;background:var(--surface2);color:var(--ink);font-weight:700;font-size:13px}
+.iam .faces2 .av{width:28px;height:28px;font-size:12px}
+.chips2{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.chips2 button{padding:6px 11px;border-radius:999px;background:var(--surface2);color:var(--sub);font-size:12.5px;font-weight:700}
+.post{display:flex;gap:10px;padding:12px 2px;border-bottom:1px solid var(--line)}.post .av{width:38px;height:38px;font-size:15px;flex:none}
+.post .pb{min-width:0;flex:1}.post .ph{font-size:13px;color:var(--sub)}.post .ph b{color:var(--ink);margin-right:6px}
+.post .pv{margin:3px 0 6px;font-size:15px;white-space:pre-wrap;word-break:break-word}
+.post .pa{display:flex;gap:8px}.post .pa button{padding:4px 10px;border-radius:999px;background:var(--surface2);color:var(--sub);font-size:12.5px;font-weight:700}
+.post .pa button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.fill{background:var(--surface);border-radius:18px;padding:14px 16px}.fill .bar{height:8px;border-radius:99px;background:var(--surface2);overflow:hidden;margin:8px 0 10px}.fill .bar i{display:block;height:100%;background:var(--accent)}
+.fill ul{list-style:none;margin:0;padding:0;display:grid;gap:6px;font-size:13.5px}.fill li{color:var(--sub)}.fill li.ok{color:var(--ink)}
+.lbl{display:block;font-size:12.5px;color:var(--sub);margin:12px 2px -4px;font-weight:700}
+.chk{display:flex;gap:8px;align-items:center;margin-top:12px;font-size:14px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+a{color:var(--accent)}.public-add{display:inline-block;padding:8px 12px;color:var(--ink);border:1px solid var(--line);border-radius:10px;text-decoration:none}.pub-note{color:var(--sub);font-size:14px}#community-status:empty{display:none} .qr-row b,.qr-row span{display:block}.group p,.post p{white-space:pre-wrap;overflow-wrap:anywhere}
+.invite{padding:12px 16px;border:1px solid var(--line);border-radius:12px;margin:12px 0}.invite summary{cursor:pointer;font-weight:700}.invite img{display:block;margin:12px 0;max-width:100%;height:auto}.invite a{display:inline-block;padding:6px 0}</style>
+
+<div class="app" id="app" data-mode="all">
+  <header>
+    <div class="top">
+      <div class="logo">ENTJ <b>카르텔</b></div>
+      <div class="who" id="who"></div>
+    </div>
+    <div class="modes" role="group" aria-label="모드">
+      <button id="m-all" data-mode="all" aria-pressed="true">전체</button>
+      <button id="m-hobby" data-mode="hobby" aria-pressed="false">취미 · 여행</button>
+      <button id="m-biz" data-mode="biz" aria-pressed="false">사업</button>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="view" id="v-board"></section>
+    <section class="view" id="v-discover" hidden></section>
+    <section class="view" id="v-match" hidden></section>
+    <section class="view" id="v-groups" hidden></section>
+    <section class="view" id="v-plaza" hidden></section>
+    <section class="view" id="v-me" hidden></section>
+      </main>
+
+  <div class="actions" id="actions">
+    <button class="no" id="btn-no" aria-label="다음 사람"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg><span class="lbl">다음 사람</span></button>
+    <button class="yes" id="btn-yes" aria-label="웹 멤버 보기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M10 14a4 4 0 005.7 0l3-3a4 4 0 00-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 00-5.7 0l-3 3a4 4 0 005.7 5.7l1-1"/></svg><span class="lbl" id="yes-lbl">멤버 목록</span></button>
+  </div>
+
+  <nav id="nav">
+    <button data-tab="board" aria-current="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4h8v5a4 4 0 01-8 0V4z"/><path d="M16 6h3a2 2 0 01-2 4h-1M8 6H5a2 2 0 002 4h1M12 13v4M8 20h8"/></svg>보드</button>
+    <button data-tab="plaza"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4V5z"/></svg>광장<span class="n" id="n-plaza"></span></button>
+    <button data-tab="discover"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="3" width="14" height="18" rx="3"/><path d="M9 17h6"/></svg>발견</button>
+    <button data-tab="match"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="12" r="5"/><circle cx="15" cy="12" r="5"/></svg>연결<span class="n" id="n-match"></span></button>
+    <button data-tab="groups"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="8" cy="9" r="3"/><circle cx="16" cy="9" r="3"/><path d="M3 19c0-3 2.5-5 5-5s5 2 5 5M11 19c0-3 2.5-5 5-5s5 2 5 5"/></svg>모임</button>
+    <button data-tab="me"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.6-7 8-7s8 3 8 7"/></svg>내 프로필<span class="n" id="n-me"></span></button>
+  </nav>
+</div>
+
+<script>
+// ───────── 실제 참가자 (2026-11-21 녹음에서 정리 · 본인 확인 전) ─────────
+const P = [
+ // ── 실제 참가자 · 2026-11-21 녹음 'ENTJ' · 'ENTJ 2'에서 정리 · 사진 준비 중 · 본인 확인 전 ──
+ {id:101,real:true,nophoto:true,name:"심지훈",age:32,g:"남",area:"경기 성남시",job:"회사 신사업 개발 · 학생 창업 7년 뒤 엑시트",
+  hello:"모든 종류의 사업 제안에 언제나 열려 있어요",
+  hobbies:["헬스","AI 만지기","독서 모임"],travel:[],biz:"적극",give:["창업 · 엑시트 경험","신사업 개발"],seek:[],
+  facts:[["2019년 학생 창업 → 7년 운영 → 엑시트",0],["다트 · 농구 · 복싱 · 클라이밍, 시작하면 끝까지 판다",0]],why:"",c:["#2f4b7c","#0f1c2e"]},
+ {id:102,real:true,nophoto:true,name:"윤예성",age:31,g:"남",area:"경남 창원시",job:"요식업 사장 · 8년 차 (술집 · 밥집 · 카페)",
+  hello:"앞으로 '다양한 잡부'가 되는 게 목표예요",
+  hobbies:["헬스"],travel:[],biz:"",give:["매장 운영","마케팅","인테리어"],seek:[],
+  facts:[["스물넷에 첫 가게를 열었다",0],["요즘 관심사는 지원사업",0]],why:"",c:["#b08436","#2a1f0e"]},
+ {id:103,real:true,nophoto:true,name:"김요한",age:30,g:"남",area:"서울",job:"개발자 · 석사 전문연구요원",
+  hello:"광대짓 하는 거 굉장히 좋아하는 ENTJ입니다",
+  hobbies:["클라이밍","러닝","술자리","어디든 돌아다니기"],travel:[],biz:"",give:["개발"],seek:[],
+  facts:[["작년 12월에 러닝을 시작해 일주일 전 하프마라톤 완주",0],["관심사는 AI, 그리고 돈 버는 것",0]],why:"",c:["#1f7a8c","#0e2a33"]},
+ {id:104,real:true,nophoto:true,name:"최승오",age:29,g:"남",area:"경북 포항시",job:"포스코 재직 · 경북대 졸업",
+  hello:"말에 힘이 실리려면 걸어온 길이 증명돼야 한다고 생각해요",
+  hobbies:["헬스"],travel:[],biz:"",give:["영어 프리토킹","모임 운영"],seek:[],
+  facts:[["3대 500을 찍어 봤다",0],["군 복무 중 독학사로 영어영문학 학위를 따 학위가 두 개",0]],why:"",c:["#2b6e4f","#0f241b"]},
+];
+const STORY={
+ // 실제 참가자 이야기 · 0=녹음에서 본인이 말함 · 2=받아쓰기가 흐려 AI가 보정(확인 전)
+ 101:[["20대 중반의 창업","2019년, 20대 중반이던 학생 시절에 창업했어요. 남들이 첫 직장을 고민할 때 대표 명함부터 판 셈이에요.",0],
+    ["7년, 그리고 엑시트","그 회사를 7년 동안 끌고 갔어요. 그리고 작게나마 회사를 파는 '엑시트'까지 해냈죠. 본인 말로는 '조금 특이한 이력'.",0],
+    ["회사 안에서 다시 새 판","회사를 판 뒤에는 회사에 들어가 출퇴근을 해요. 맡은 일은 신사업 개발 — 회사 안에서 또 새로운 사업을 만드는 자리예요.",0],
+    ["뽀갤 때까지","다트, 농구, 복싱, 클라이밍. 하나를 시작하면 끝까지 뽀개는 스타일이에요. 모바일 게임에서도 랭킹을 찍어 봤대요. 요즘은 헬스, 그리고 AI를 만지는 게 제일 재밌대요.",0],
+    ["다음 판을 찾는 중","독서 모임에 나가 보려는 중이에요. 요식업을 포함해 어떤 사업 제안이든 '거짓말 안 치고' 열려 있고, 실제로 가게 하나를 운영해 보려 한 적도 있대요.",0]],
+ 102:[["스물넷, 첫 가게","스물네 살에 첫 가게 문을 열었어요. 그 가게에서 시작해 지금 서른하나, 요식업만 8년째예요.",0],
+    ["가리지 않는 사장","매장이 하나둘 늘어 지금은 술집 · 밥집 · 카페를 가리지 않고 운영해요. 마케팅도, 인테리어도 남에게 맡기지 않고 직접 해 왔대요.",0],
+    ["사람을 만나러 다니는 일","여기저기 지역을 다니며 재밌는 사람들을 많이 만나고 있어요. 요즘 관심사는 지원사업이에요.",2],
+    ["목표는 '다양한 잡부'","가게 하나, 업종 하나에 머무르지 않을 생각이에요. 이런저런 일을 다양하게 해 보면서 '다양한 잡부'가 되는 게 앞으로의 목표래요.",0]],
+ 103:[["석사 개발자","석사를 마치고, 군 복무 대신 회사에서 일하는 '전문연구요원'으로 개발을 하고 있어요. 관심사는 AI, 그리고 돈 버는 것.",0],
+    ["12월에 시작한 러닝","작년 12월에 러닝을 시작했어요. 틈틈이 거리를 늘려 가다가, 일주일 전 하프마라톤을 완주하고 왔어요. 1년이 채 안 걸렸어요.",0],
+    ["벽을 타는 사람","운동을 좋아하는데, 그중에서도 클라이밍을 굉장히 많이 해요.",0],
+    ["노는 쪽 ENTJ","사람들이랑 술 마시고, 어디든 돌아다니고, 판을 즐겁게 만드는 걸 좋아해요. 본인 표현으로는 '광대짓 하는 거 굉장히 좋아하는 쪽 ENTJ'.",0]],
+ 104:[["대구 · 경북으로 채운 삶","포항에서 나서 경북대를 나왔고, 지금은 포스코에 다녀요. '말에 힘이 실리려면 걸어온 길이 증명돼야 한다'며 삶을 대구 · 경북으로 채워 왔대요.",2],
+    ["수도권 집중을 어떻게 풀까","돈보다 자기가 나고 자란 대구 · 경북에 대한 애향심이 커요. 수도권으로 몰리는 지금 상황을 어떻게 풀지 고민을 많이 한대요.",0],
+    ["군대에서 딴 학위","군 복무 중에 독학사로 영어영문학 학위를 따서 학위가 두 개예요. 영어 프리토킹도 가능해요.",0],
+    ["대구의 영어 모임","경북대 프랑스 유학생, 대구 미군 기지 캠프 헨리의 미군, 서울만큼 영어 환경을 원하는 대학생들을 모아 1년 동안 영어 모임을 운영했어요.",0],
+    ["끝을 찍는 헬스","일주일에 최소 세 번은 운동해요. '한 분야를 하면 끝을 찍어 보자'는 마음으로 3대 500까지 찍어 봤대요.",0]],
+};
+const AI={
+ 101:{line:"20대 중반에 창업해 7년 만에 회사를 판 사람",slogan:"시작했으면, 끝까지",who:"일이든 취미든 한번 잡으면 랭킹을 찍을 때까지 파는 사람. 사업 이야기라면 업종을 가리지 않고 가장 먼저 귀를 여는 쪽이에요.",title:"끝장 보는 창업가",sc:[24,23,21,23]},
+ 102:{line:"스물넷에 첫 가게를 열어 8년째 매장을 늘려 온 사장",slogan:"가게 하나로 끝나지 않는다",who:"현장에서 직접 부딪히며 배우는 사람. 마케팅도 인테리어도 손수 하다 보니 '다양한 잡부'를 목표로 삼았어요.",title:"현장형 확장가",sc:[23,22,22,21]},
+ 103:{line:"석사 개발자이자, 러닝 1년도 안 돼 하프마라톤을 뛴 사람",slogan:"놀 때도 진심, 뛸 때도 진심",who:"판을 즐겁게 만드는 ENTJ. 목표를 잡으면 조용히 거리를 늘려 가 결국 완주해 내는 사람이에요.",title:"노는 판의 사령관",sc:[21,20,21,22]},
+ 104:{line:"나고 자란 대구 · 경북의 내일을 고민하는 포스코인",slogan:"말보다 걸어온 길로 증명한다",who:"자기 말에 힘이 실리려면 증명이 먼저라고 믿는 사람. 학위도, 운동도, 모임도 끝을 찍어 보는 쪽이에요.",title:"증명하는 애향가",sc:[23,22,23,24]},
+};
+const DIMS=["추진력","결단력","리더십","끝장 근성"];
+// 연애 상태 · 싱글이면 '구인 중'
+const REL={101:"싱글",102:"싱글",103:"싱글",104:"연애 중"};
+const relTxt=r=>({"싱글":["구인 중","상시 채용 · 지원 환영"],"연애 중":["연애 중","채용 마감"],"기혼":["기혼","평생 계약 체결"]}[r]||["비공개","면접 때 공개"]);
+
+// 트로피(도전과제) · cat: biz=사업, hobby=취미 · 운동, life=성장
+const TROPHY={
+ found:{t:"창업해 보기",d:"내 이름으로 회사 · 가게를 열어 봤다",cat:"biz"},
+ exit:{t:"엑시트",d:"키운 회사를 팔아 봤다",cat:"biz"},
+ long:{t:"한 우물 5년",d:"한 사업을 5년 넘게 끌고 갔다",cat:"biz"},
+ multi:{t:"여러 판 동시에",d:"매장 · 사업을 두 개 넘게 함께 굴린다",cat:"biz"},
+ invest:{t:"투자 받아 보기",d:"투자 계약서에 도장을 찍어 봤다",cat:"biz"},
+ side:{t:"퇴근 후 수익",d:"본업 밖에서 꾸준히 돈을 번다",cat:"biz"},
+ half:{t:"하프마라톤 완주",d:"21.0975km를 끝까지 뛰었다",cat:"hobby"},
+ sbd:{t:"3대 500",d:"스쿼트 · 벤치 · 데드 합계 500kg",cat:"hobby"},
+ rank:{t:"랭킹 · 입상",d:"게임 랭킹이나 대회 입상을 찍어 봤다",cat:"hobby"},
+ streak:{t:"3년 꾸준히",d:"한 가지를 3년 넘게 거르지 않았다",cat:"hobby"},
+ degree2:{t:"학위 두 개",d:"학위를 두 개 이상 땄다",cat:"life"},
+ host:{t:"판을 만든 사람",d:"모임 · 동호회를 직접 만들거나 이끌었다",cat:"life"},
+ lang:{t:"외국어로 일하기",d:"외국어로 대화 · 협상이 된다",cat:"life"},
+};
+// 모든 도전 · 성취 · [사람, 내용, 트로피, 0=본인이 말함 1=AI 추정]
+const ACH=[
+ [101,"2019년, 20대 중반에 학생 창업","found",0],[101,"7년 운영 뒤 엑시트","exit",0],[101,"한 회사를 7년 동안 끌고 감","long",0],[101,"모바일 게임 랭킹 찍기","rank",0],
+ [102,"스물넷에 첫 가게 오픈","found",0],[102,"술집 · 밥집 · 카페 함께 운영","multi",0],[102,"요식업 8년 차","long",0],
+ [103,"러닝 시작 1년이 안 돼 하프마라톤 완주","half",0],[103,"석사 졸업 · 학사와 석사 학위","degree2",1],
+ [104,"3대 500","sbd",0],[104,"군 복무 중 독학사로 영어영문학 학위 · 학위 두 개","degree2",0],[104,"대구에서 영어 모임 1년 운영","host",0],[104,"영어 프리토킹","lang",0],
+];
+// ENTJ 지수 = 네 칸(추진력 · 결단력 · 리더십 · 끝장 근성) 각 25점. 칸마다 기본 5점 + 녹음에서 나온 근거 하나당 본인이 말함 6점 · AI 추정 3점(칸당 최대 25)
+const EV={found:[0,1,2],exit:[1],long:[3],multi:[0,2],invest:[1,2],side:[0],half:[3],sbd:[3],rank:[3],streak:[3],degree2:[3],host:[0,2],lang:[]};
+function dimsOf(id){const d=[5,5,5,5];ACH.filter(a=>a[0]===id).forEach(a=>(EV[a[2]]||[]).forEach(i=>d[i]=Math.min(25,d[i]+(a[3]?3:6))));return d}
+const evN=id=>ACH.filter(a=>a[0]===id&&(EV[a[2]]||[]).length).length;
+const score=id=>dimsOf(id).reduce((a,b)=>a+b,0);
+const ranking=list=>[...list].sort((a,b)=>score(b.id)-score(a.id)||evN(b.id)-evN(a.id));
+const rankNo=(list,id)=>1+list.filter(p=>score(p.id)>score(id)).length;
+
+// 관심사 (짝 추천에 씀 · 녹음에서 본인이 말한 것)
+const LIKES={101:["AI","사업","창업"],102:["지원사업","사업","요식업"],103:["AI","돈 버는 것","운동"],104:["대구 · 경북","영어","운동"]};
+P.forEach(p=>p.likes=LIKES[p.id]||[]);
+
+// 모임 제안 샘플 · 제안자는 모두 심지훈
+const SAMPLE=[
+ {id:"s1",mode:"hobby",by:101,t:"토요일 아침 러닝",d:"매주 토요일 오전 8시 · 수성못 한 바퀴 5km · 속도 상관없이 끝까지",tags:["러닝","운동"]},
+ {id:"s2",mode:"hobby",by:101,t:"헬스 3대 측정 대결",d:"한 달에 한 번 같은 헬스장에서 3대 기록 재고 저녁 먹기",tags:["헬스","운동"]},
+ {id:"s3",mode:"hobby",by:101,t:"클라이밍 같이 가요",d:"평일 저녁 · 처음이어도 괜찮음 · 끝나고 맥주 한 잔",tags:["클라이밍"]},
+ {id:"s4",mode:"hobby",by:101,t:"1월 일본 짧은 여행",d:"2박 3일 · 항공권 싸게 뜨는 주말에 바로 · 목적지는 같이 정해요",tags:["어디든 돌아다니기"]},
+ {id:"s5",mode:"hobby",by:101,t:"한 달 한 권 독서 모임",d:"매달 마지막 주 · 각자 읽은 책에서 써먹을 것 하나씩",tags:["독서 모임"]},
+ {id:"s6",mode:"biz",by:101,t:"AI로 일 줄이는 법 저녁 스터디",d:"격주 · 각자 일에서 AI로 줄인 것 하나씩 시연",tags:["AI 만지기","AI"]},
+ {id:"s7",mode:"biz",by:101,t:"지원사업 같이 파기",d:"올해 나올 지원사업 공고를 같이 보고 서로 사업계획서 봐 주기",tags:["지원사업"]},
+ {id:"s8",mode:"biz",by:101,t:"창업 · 엑시트 이야기 저녁",d:"창업부터 엑시트까지 겪은 것 털어놓기 · 질문 무제한",tags:["사업","창업"]},
+];
+
+// ───────── 상태 ─────────
+const S={mode:"all",tab:"board",idx:{all:0,hobby:0,biz:0}};
+try{const t=localStorage.getItem("cartel-tab2");if(["board","plaza","discover","match","groups","me"].includes(t))S.tab=t}catch(e){}
+
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const grad=c=>`linear-gradient(150deg,${c[0]},${c[1]})`;
+const pic=p=>p.nophoto?"none":`url(photos/p${p.id}.jpg)`;
+const ini=p=>p.nophoto?esc([...p.name][0]):"";
+const av=(p,cls="av")=>`<div class="${cls}" role="img" aria-label="${esc(p.name)}" style="background:${pic(p)} center 25%/cover, ${grad(p.c)}">${ini(p)}</div>`;
+const byId=id=>P.find(p=>p.id===id);
+const fn=p=>p.name.slice(1)||p.name;
+const YES={all:"연결하기",hobby:"같이 해요",biz:"제안하기"};
+
+const MEID=null; const meP=()=>null;
+// ───────── 이 방 안 짝 추천 (닮은 사람 · 잘 맞을 사람 · AI 추정) ─────────
+// 찰떡 점수(0~100) = 대화 거리(겹치는 취미 · 관심사 하나당 15, 최대 45) + 서로 채워 줌(한 사람의 가장 강한 칸이 상대의 가장 약한 칸이면 15, 양쪽 최대 30) + 일로 이어짐(상대가 찾는 걸 줄 수 있으면 하나당 15 · 사업 제안에 열린 사람이 있고 상대가 줄 게 있으면 10, 최대 25)
+function overlap(a,b){return [...new Set([...a.hobbies.filter(h=>b.hobbies.includes(h)),...a.likes.filter(h=>b.likes.includes(h))])]}
+function pairInfo(a,b){
+  const ov=overlap(a,b), why=[];
+  const talk=Math.min(45,ov.length*15); if(ov.length)why.push("겹침: "+ov.join(" · "));
+  const da=dimsOf(a.id), db=dimsOf(b.id), hi=d=>d.indexOf(Math.max(...d)), lo=d=>d.indexOf(Math.min(...d));
+  let fill=0;
+  if(da[hi(da)]>db[hi(da)]&&hi(da)===lo(db)){fill+=15;why.push(`${fn(a)}님의 ${DIMS[hi(da)]}이 ${fn(b)}님을 채움`)}
+  if(db[hi(db)]>da[hi(db)]&&hi(db)===lo(da)){fill+=15;why.push(`${fn(b)}님의 ${DIMS[hi(db)]}이 ${fn(a)}님을 채움`)}
+  let work=0;
+  const g1=a.give.filter(x=>(b.seek||[]).includes(x)), g2=b.give.filter(x=>(a.seek||[]).includes(x));
+  work+=(g1.length+g2.length)*15; g1.forEach(x=>why.push(`${fn(a)}님이 ${x}을 줄 수 있음`)); g2.forEach(x=>why.push(`${fn(b)}님이 ${x}을 줄 수 있음`));
+  const bw=p=>p.give.filter(x=>!/영어|프리토킹|언어/.test(x));
+  if(a.biz&&bw(b).length){work+=10;why.push(`${fn(a)}님이 사업 제안에 열려 있고 ${fn(b)}님은 ${bw(b)[0]}`)} else if(b.biz&&bw(a).length){work+=10;why.push(`${fn(b)}님이 사업 제안에 열려 있고 ${fn(a)}님은 ${bw(a)[0]}`)}
+  work=Math.min(25,work);
+  const pt=talk+fill+work;
+  if(!why.length)why.push("겹치는 게 아직 없어요 · 모임 기록에서 공통점을 더 찾지 못했어요");
+  return {pt,why,twin:pt,fit:pt,tw:why,ft:why};
+}
+function allPairs(){const r=[];P.forEach((a,i)=>P.slice(i+1).forEach(b=>r.push({a,b,...pairInfo(a,b)})));return r}
+function bestFor(id){
+  const me=byId(id), o=P.filter(p=>p.id!==id).map(p=>({p,...pairInfo(me,p)})).sort((x,y)=>y.pt-x.pt);
+  const twin=o[0], fit=o[1]||o[0];
+  return {twin,fit,rest:o.slice(2)};
+}
+const COMP=[["개발","신사업 개발"],["개발","매장 운영"],["마케팅","신사업 개발"],["창업 · 엑시트 경험","매장 운영"],["모임 운영","매장 운영"]];
+function apkOverlap(a,b){return [...new Set([...a.hobbies.filter(h=>b.hobbies.includes(h)),...a.likes.filter(h=>b.likes.includes(h))])]}
+function apkPair(a,b){
+  const sh=a.hobbies.filter(h=>b.hobbies.includes(h)), sl=a.likes.filter(h=>b.likes.includes(h));
+  const da=AI[a.id].sc, db=AI[b.id].sc;
+  const sim=1-da.reduce((s,v,i)=>s+Math.abs(v-db[i]),0)/100, ag=Math.abs(a.age-b.age);
+  const twin=Math.max(10,Math.min(98,Math.round(30+sh.length*14+sl.length*12+sim*24-ag*2)));
+  const comp=COMP.filter(([x,y])=>(a.give.includes(x)&&b.give.includes(y))||(a.give.includes(y)&&b.give.includes(x)));
+  const wa=da.indexOf(Math.min(...da)), wb=db.indexOf(Math.min(...db));
+  const ca=db[wa]-da[wa]>=3, cb=da[wb]-db[wb]>=3;
+  const fit=Math.max(10,Math.min(98,Math.round(35+comp.length*20+(ca||cb?10:0)+(sl.length?8:0)+(a.biz||b.biz?6:0)+sh.length*4)));
+  const tw=[]; if(sh.length)tw.push("취미가 겹침: "+sh.join(" · ")); if(sl.length)tw.push("관심사가 겹침: "+sl.join(" · ")); if(sim>.85)tw.push("ENTJ 지수 네 칸 모양이 비슷함"); if(ag<=2)tw.push("또래");
+  const ft=comp.map(([x,y])=>a.give.includes(x)&&b.give.includes(y)?`${fn(a)}님의 ${x} + ${fn(b)}님의 ${y}`:`${fn(a)}님의 ${y} + ${fn(b)}님의 ${x}`);
+  if(ca)ft.push(`${fn(a)}님이 약한 '${DIMS[wa]}'을 ${fn(b)}님이 채움`); else if(cb)ft.push(`${fn(b)}님이 약한 '${DIMS[wb]}'을 ${fn(a)}님이 채움`);
+  if(a.biz||b.biz)ft.push("사업 제안에 열려 있는 사람이 있음");
+  return {twin,fit,tw:tw.length?tw:["둘 다 ENTJ"],ft:ft.length?ft:["하는 일이 달라 서로 배울 게 많음"]};
+}
+
+const deck=()=>P;
+
+// ───────── 발견 ─────────
+const WIDE=matchMedia("(min-width:760px)");
+function srcTag(code,p){
+  if(code===2) return "받아쓰기가 흐려 AI가 보정 · 확인 전";
+  if(code===1) return "AI 추정 · 확인 전";
+  return "녹음에서 본인이 말함";
+}
+function renderDiscover(){
+  const d=deck(), i=S.idx[S.mode], p=d[i];
+  const el=$("#v-discover");
+  $("#actions").hidden = !(S.tab==="discover" && p);
+  if(!p){el.innerHTML=`<div class="empty"><b>이 방 사람 ${d.length}명을 다 봤어요</b>새로 등록한 멤버는 공개 프로필에서 볼 수 있어요. <a href="/members">새 멤버 보기</a><br><br><button class="join" id="reset">처음부터 다시 보기</button></div>`;
+    $("#reset").onclick=()=>{S.idx[S.mode]=0;render()};return}
+  const mode=S.mode, ai=AI[p.id], first=fn(p), me=meP();
+  const rel=relTxt(REL[p.id]);
+  const st=(STORY[p.id]||[]).filter(c=>!c[0].startsWith("AI가 본"));
+  const rk=ranking(P), pos=rk.findIndex(x=>x.id===p.id)+1;
+  const mine=ACH.filter(a=>a[0]===p.id);
+  const ov=me&&me.id!==p.id?overlap(me,p):[];
+  const bf=bestFor(p.id);
+
+  const right=`<div class="prof-r">
+    <div class="counter"><span>${i+1} / ${d.length}명</span><span>옆으로 밀면 다음 · 이전 사람</span></div>
+    <div class="photo" id="card">
+      <div class="art" style="background:${pic(p)} center 25%/cover, ${grad(p.c)}">${p.nophoto?`<span class="noph">${ini(p)}</span>`:""}</div>
+      <div class="ph-b"><span class="badge ok">ENTJ</span><span class="badge">${p.edited?"본인이 다듬음":"녹음에서 정리 · 본인 확인 전"}</span>${p.nophoto?`<span class="badge">사진 준비 중</span>`:""}</div>
+    </div>
+    <div class="idt">
+      <h2>${esc(p.name)}<span>${p.age}</span></h2>
+      <p class="one">${esc(ai.line)}</p>
+      <dl class="mini">
+        <div><dt>하는 일</dt><dd>${esc(p.job)}</dd></div>
+        <div><dt>사는 곳</dt><dd>${esc(p.area)}</dd></div>
+        <div><dt>연애 상태</dt><dd class="rel"><b>${rel[0]}</b><small>${rel[1]}</small></dd></div>
+      </dl>
+      ${p.hello?`<p class="hello">"${esc(p.hello)}"</p>`:""}
+    </div>
+    <div class="aibox">
+      <div class="lab"><span>AI가 본 ${esc(first)}님</span><span class="tag ai">AI 분석 · 확인 전 · 재미로</span></div>
+      <div class="slogan">"${esc(ai.slogan)}"</div>
+      <p class="whois">${esc(ai.who)}</p>
+      <div class="aift"><span>칭호 <b>${esc(ai.title)}</b></span><span>ENTJ 지수 <b>${score(p.id)}</b> · ${P.length}명 중 ${pos}위</span></div>
+    </div>
+    <div class="act-slot"></div>
+  </div>`;
+
+  let left=`<div class="prof-l"><div class="tale-h"><h3>${esc(first)}님의 이야기</h3><span>${st.length}장</span></div>
+    <div class="tale"><ol>${st.map((c,j)=>`<li><div class="no">${j+1}장</div><h4>${esc(c[0])}</h4><p>${esc(c[1])}</p>${c[2]?`<span class="tag ai">${srcTag(c[2],p)}</span>`:""}</li>`).join("")}</ol></div>
+    <p class="tale-n">꼬리표 없는 장은 2026-11-21 녹음에서 본인이 직접 말한 내용이에요.</p>`;
+  left+=`<div class="prompt hl"><div class="q">이 방에서 ${esc(first)}님과 <span class="tag ai">AI 추정 · 재미로</span></div>
+    <button class="pair" data-p="${bf.twin.p.id}"><div class="fc">${av(bf.twin.p)}</div><div class="pt"><b>가장 찰떡 · ${esc(bf.twin.p.name)}</b><small>${esc(bf.twin.tw.join(" · "))}</small></div><span class="pc">${bf.twin.pt}점</span></button>
+    <button class="pair" data-p="${bf.fit.p.id}"><div class="fc">${av(bf.fit.p)}</div><div class="pt"><b>두 번째 찰떡 · ${esc(bf.fit.p.name)}</b><small>${esc(bf.fit.ft.join(" · "))}</small></div><span class="pc">${bf.fit.pt}점</span></button></div>`;
+  if(ov.length) left+=`<div class="prompt"><div class="q">${esc(fn(me))}님과 겹치는 것 <span class="tag">${ov.length}개</span></div><div class="chips">${ov.map(o=>`<span class="chip match">${esc(o)}</span>`).join("")}</div></div>`;
+  if(mine.length) left+=`<div class="prompt"><div class="q">도전 · 성취 <span class="tag">${mine.length}개</span></div><div class="chips">${mine.map(a=>`<span class="chip">${esc(TROPHY[a[2]].t)}</span>`).join("")}</div><div class="a small">${mine.map(a=>esc(a[1])).join(" · ")}</div></div>`;
+  if(mode==="biz") left+=`<div class="prompt"><div class="q">사업 제안이 오면 <span class="tag">${esc(p.biz||"아직 안 물어봄")}</span></div><div class="give"><div><h4>줄 수 있는 것</h4><div class="chips">${p.give.map(x=>`<span class="chip">${esc(x)}</span>`).join("")}</div></div><div><h4>관심사</h4><div class="chips">${p.likes.map(x=>`<span class="chip ${me&&me.likes.includes(x)?"match":""}">${esc(x)}</span>`).join("")}</div></div></div></div>`;
+  left+=`<div class="prompt"><div class="q">취미</div><div class="chips">${p.hobbies.map(h=>`<span class="chip ${me&&me.id!==p.id&&me.hobbies.includes(h)?"match":""}">${esc(h)}</span>`).join("")}</div></div>`;
+  if(mode!=="biz") left+=`<div class="prompt"><div class="q">관심사</div><div class="chips">${p.likes.map(h=>`<span class="chip ${me&&me.id!==p.id&&me.likes.includes(h)?"match":""}">${esc(h)}</span>`).join("")}</div></div>`;
+  if(mode!=="biz" && p.give.length) left+=`<div class="prompt"><div class="q">할 수 있는 것 ${p.biz?`<span class="tag">사업 제안 ${esc(p.biz)}</span>`:""}</div><div class="chips">${p.give.map(x=>`<span class="chip">${esc(x)}</span>`).join("")}</div></div>`;
+  left+=`<div class="prompt"><div class="q">연락처</div><div class="a small">멤버 카드에는 개인 연락처를 표시하지 않아요.</div></div>`;
+  left+=`<div class="sample">실제 참가자 · 2026-11-21 녹음에서 Claude가 정리 · AI 분석 · 점수 · 짝 추천은 재미로 · 본인 확인 전</div></div>`;
+
+  $("#app").appendChild($("#actions"));
+  el.innerHTML=right+left;
+  el.querySelectorAll("[data-p]").forEach(b=>b.onclick=()=>openPerson(+b.dataset.p));
+  if(WIDE.matches) el.querySelector(".act-slot").appendChild($("#actions"));
+  swipe($("#card"));
+  const extra=document.createElement("section");extra.className="prompt";
+  extra.innerHTML='<div class="q">프로필 상세</div>'+p.facts.map(([v,k])=>'<p>'+esc(v)+' · '+esc(srcTag(k,p))+'</p>').join("")+'<p>성별 · '+esc(p.g)+'</p>';
+  el.querySelector(".prof-l").append(extra);
+  const legacy=document.createElement("details");legacy.className="prompt";
+  legacy.innerHTML='<summary>APK 버전의 AI 점수와 짝 추천</summary><p>'+DIMS.map((d,i)=>d+' '+ai.sc[i]).join(' · ')+'</p>'+P.filter(o=>o.id!==p.id).map(o=>{const a=apkPair(p,o);return '<p><b>'+esc(o.name)+'</b> · 닮은 정도 '+a.twin+'점 · 잘 맞는 정도 '+a.fit+'점<br>'+esc([...a.tw,...a.ft].join(' · '))+'</p>'}).join('');
+  el.querySelector(".prof-l").append(legacy);
+}
+
+// ───────── 보드 (첫 화면) ─────────
+function openPerson(id){
+  const k=deck().findIndex(x=>x.id===id); if(k<0) return;
+  S.idx[S.mode]=k; S.tab="discover";
+  try{localStorage.setItem("cartel-tab2",S.tab)}catch(e){}
+  $("#main").scrollTop=0; render();
+}
+function pairRow(x){
+  const pc=x.pt, why=x.why;
+  return `<button class="pair" data-p="${x.a.id}"><div class="fc">${av(x.a)}${av(x.b)}</div><div class="pt"><b>${esc(x.a.name)} · ${esc(x.b.name)}</b><small>${esc(why.join(" · "))}</small></div><span class="pc">${pc}점</span></button>`;
+}
+function renderBoard(){
+  const people=P;
+  const cats={all:["biz","hobby","life"],hobby:["hobby","life"],biz:["biz","life"]}[S.mode];
+  const tkeys=Object.keys(TROPHY).filter(k=>cats.includes(TROPHY[k].cat));
+  const ach=ACH.filter(a=>tkeys.includes(a[2]));
+  const won=tkeys.filter(k=>ach.some(a=>a[2]===k));
+  const rk=ranking(people), top=rk[0], max=100;
+  const modeName={all:"",hobby:" · 취미 · 여행",biz:" · 사업"}[S.mode];
+  const trows=tkeys.map(k=>{const who=[...new Set(ach.filter(a=>a[2]===k).map(a=>a[0]))];return {k,who}}).sort((a,b)=>b.who.length-a.who.length);
+  const ps=allPairs();
+  const best3=[...ps].sort((a,b)=>b.pt-a.pt).slice(0,3);
+
+  const pairHtml=`<section>
+    <div class="tale-h"><h3>오늘 이 방의 찰떡 짝</h3><span class="tag ai">AI 추정 · 재미로</span></div>
+    ${best3.map(x=>pairRow(x)).join("")}
+    <p class="note">찰떡 점수 100점 = 대화 거리(겹치는 취미 · 관심사, 45) + 서로 채워 줌(한 사람의 가장 강한 ENTJ 칸이 상대의 가장 약한 칸, 30) + 일로 이어짐(상대가 찾는 걸 줄 수 있음 · 사업 제안, 25).</p>
+    <p class="note">연결 탭에서 멤버별 추천 근거를 볼 수 있어요.</p>
+  </section>`;
+
+  const rankHtml=`<section>
+    <div class="tale-h"><h3>누가 제일 ENTJ스러운가</h3><span class="tag ai">AI 추정 · 재미로</span></div>
+    <button class="champ" data-p="${top.id}">${av(top)}<div><div class="k1">${rk.filter(p=>score(p.id)===score(top.id)).length>1?"공동 1위":"1위"} · ENTJ 지수 ${score(top.id)} · 근거 ${evN(top.id)}개</div><div class="nm">${esc(top.name)}</div><div class="tt">${esc(AI[top.id].title)}</div><div class="sl">"${esc(AI[top.id].slogan)}"</div></div></button>
+    ${rk.map((p,j)=>`<button class="rrow" data-p="${p.id}"><span class="rn">${rankNo(rk,p.id)}</span>${av(p)}<div style="min-width:0"><div class="nm">${esc(p.name)}</div><div class="tt">${esc(AI[p.id].title)}</div><div class="dims">${DIMS.map((n,x)=>n+" "+dimsOf(p.id)[x]).join(" · ")} · 근거 ${evN(p.id)}개</div></div><span class="sc">${score(p.id)}</span><div class="sbar"><i style="width:${score(p.id)/max*100}%"></i></div></button>`).join("")}
+    <p class="note">ENTJ 지수 = 추진력 · 결단력 · 리더십 · 끝장 근성 각 25점. 칸마다 기본 5점에, 녹음에서 나온 도전 · 성취 하나당 6점(AI 추정이면 3점)을 더해요. 예: 창업 = 추진력 · 결단력 · 리더십, 엑시트 = 결단력, 모임을 만듦 = 리더십 · 추진력, 하프마라톤 · 3대 500 · 학위 두 개 = 끝장 근성. 말한 만큼 올라가요.</p>
+  </section>`;
+
+  const trophyHtml=`<section>
+    <div class="tale-h"><h3>트로피 · 도전과제</h3><span>${won.length} / ${tkeys.length}종 달성</span></div>
+    ${trows.map(r=>{const t=TROPHY[r.k];return `<div class="trow"><div class="th"><b>${esc(t.t)}</b><span class="cnt ${r.who.length?"":"zero"}">${r.who.length?r.who.length+"명 달성":"아직 없음 · 첫 주인 모집"}</span></div><div class="ds">${esc(t.d)}</div>${r.who.length?`<div class="faces">${r.who.map(id=>av(byId(id))).join("")}</div>`:""}<div class="sbar" style="grid-column:auto"><i style="width:${r.who.length/people.length*100}%"></i></div></div>`}).join("")}
+  </section>`;
+
+  const feedHtml=`<section>
+    <div class="tale-h"><h3>모든 도전 · 성취</h3><span>${ach.length}개</span></div>
+    ${ach.map(a=>{const p=byId(a[0]);return `<button class="frow" data-p="${p.id}">${av(p)}<div style="min-width:0"><div class="ft"><b>${esc(p.name)}</b>${esc(a[1])}</div><div class="ftg"><span class="tag">${esc(TROPHY[a[2]].t)}</span>${a[3]?`<span class="tag ai">AI 추정 · 확인 전</span>`:""}</div></div></button>`}).join("")}
+  </section>`;
+
+  $("#v-board").innerHTML=`<div class="bd-top"><div><h2 class="bd-h">ENTJ 카르텔 보드${modeName}</h2><p class="bd-s">오늘 이 방에 모인 ENTJ가 도전하고 이룬 것, 한곳에.</p></div></div>
+    <div class="kpis">
+      <div class="kpi"><b>${people.length}명</b><span>이 방의 ENTJ</span></div>
+      <div class="kpi"><b>${ach.length}개</b><span>도전 · 성취</span></div>
+      <div class="kpi"><b>${won.length} / ${tkeys.length}종</b><span>트로피 달성</span></div>
+      <div class="kpi"><b>${esc(top.name)}</b><span>ENTJ 지수 1위</span></div>
+    </div>
+    <a class="qr-row" href="/members?edit"><div><b>내 프로필 만들기 · 말로 작성</b><span>직접 입력하거나 녹음에서 초안을 만들어 보세요.</span></div></a>
+    <a class="qr-row" href="/members"><div><b>새로 등록한 멤버 보기</b><span>웹에서 직접 작성한 공개 프로필</span></div></a>
+    <details class="invite"><summary>모임 초대 QR</summary><img src="/entj-cartel-qr.png" width="208" height="208" alt="ENTJ 카르텔 공개 웹앱 초대 QR 코드"><a href="/entj-cartel-qr.png" download="ENTJ-카르텔-초대-QR.png">QR 이미지 저장</a></details>
+    <div class="bd-grid">${rankHtml}<div>${pairHtml}${trophyHtml}</div></div>
+    ${feedHtml}
+    <div class="sample">실제 참가자 ${people.length}명 · 2026-11-21 녹음에서 Claude가 정리(본인 확인 전) · AI 점수와 짝 추천은 재미로</div>`;
+  document.querySelectorAll("#v-board [data-p]").forEach(b=>b.onclick=()=>openPerson(+b.dataset.p));
+}
+function move(step){
+  const d=deck(); const n=S.idx[S.mode]+step;
+  if(n<0) return;
+  const card=$("#card");
+  if(card){card.style.transform=`translateX(${step>0?-60:60}px)`;card.style.opacity="0"}
+  setTimeout(()=>{S.idx[S.mode]=Math.min(n,d.length); $("#main").scrollTop=0; render()},180);
+}
+function swipe(card){
+  let x0=null,dx=0;
+  card.addEventListener("pointerdown",e=>{x0=e.clientX;dx=0;card.style.transition="none";card.setPointerCapture(e.pointerId)});
+  card.addEventListener("pointermove",e=>{if(x0===null)return;dx=e.clientX-x0;card.style.transform=`translateX(${dx*.5}px)`});
+  const end=()=>{if(x0===null)return;x0=null;card.style.transition="";if(Math.abs(dx)>90)move(dx<0?1:-1);else card.style.transform=""};
+  card.addEventListener("pointerup",end);card.addEventListener("pointercancel",end);
+}
+
+// ───────── 연결 (나에게 소개 · 요청 · 수락 · 카톡 아이디) ─────────
+const TOPIC=["오늘 와서 제일 놀란 것","같이 ○○ 할 사람 구해요","요즘 빠져 있는 것","ENTJ라서 들어 본 말","제가 도와드릴 수 있는 것","저 이거 도와주실 분"];
+
+</script><script src="/community.js"></script></html>
